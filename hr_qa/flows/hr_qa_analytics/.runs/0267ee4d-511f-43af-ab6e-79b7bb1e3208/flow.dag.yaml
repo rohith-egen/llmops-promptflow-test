@@ -1,0 +1,86 @@
+id: bring_your_own_data_qna
+name: Bring Your Own Data QnA
+inputs:
+  question_1:
+    type: string
+    default: How to use SDK V2?
+    is_chat_input: false
+  question_2:
+    type: string
+    is_chat_input: false
+outputs:
+  output:
+    type: string
+    reference: ${hr_analytics.output}
+nodes:
+- name: hr_analytics
+  type: python
+  source:
+    type: package
+    tool: promptflow_vectordb.tool.common_index_lookup.search
+  inputs:
+    mlindex_content: >
+      embeddings:
+        api_base: https://ai-visionhub907737153141.openai.azure.com/
+        api_type: azure
+        api_version: 2023-07-01-preview
+        batch_size: '1'
+        connection:
+          id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/Default_AzureOpenAI
+        connection_type: workspace_connection
+        deployment: text-embedding-ada-002
+        dimension: 1536
+        kind: open_ai
+        model: text-embedding-ada-002
+        schema_version: '2'
+      index:
+        api_version: 2023-07-01-preview
+        connection:
+          id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/vision-search-service-AzureAISearch-3mxm4mqtzh-shared
+        connection_type: workspace_connection
+        endpoint: https://vision-search-service.search.windows.net
+        engine: azure-sdk
+        field_mapping:
+          content: content
+          embedding: contentVector
+          metadata: meta_json_string
+        index: hr-index-latest
+        kind: acs
+        semantic_configuration_name: azureml-default
+    query_type: Hybrid (vector + keyword)
+    top_k: 2
+  use_variants: false
+- name: open_model_llm
+  type: custom_llm
+  source:
+    type: package_with_prompt
+    path: open_model_llm.jinja2
+    tool: promptflow.tools.open_model_llm.OpenModelLLM.call
+  inputs:
+    api: chat
+    endpoint_name: No endpoints found. Please add a connection.
+    deployment_name: default
+    temperature: 1
+    max_new_tokens: 500
+    top_p: 1
+    model_kwargs: {}
+  use_variants: false
+- name: prompt_test
+  type: prompt
+  source:
+    type: code
+    path: prompt_test.jinja2
+  inputs:
+    question: ${inputs.question_1}
+  use_variants: false
+- name: clean_prompt
+  type: python
+  source:
+    type: code
+    path: clean_prompt.py
+  inputs:
+    input1: ${prompt_test.output}
+  use_variants: false
+node_variants: {}
+environment:
+  python_requirements_txt: requirements.txt

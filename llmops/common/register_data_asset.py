@@ -117,8 +117,8 @@ for elem in data_config["datasets"]:
 
             try:
                 data_info = ml_client.data.get(
-                    name=dataset_name
-                    # label='latest'
+                    name=dataset_name,
+                    label='latest'
                 )
 
                 m_hash = dict(data_info.tags).get("data_hash")
@@ -131,8 +131,8 @@ for elem in data_config["datasets"]:
                 ml_client.data.create_or_update(aml_dataset)
 
             aml_dataset_unlabeled = ml_client.data.get(
-                name=dataset_name
-                #   label="latest"
+                name=dataset_name,
+                 label="latest"
             )
 
             logger.info(aml_dataset_unlabeled.version)

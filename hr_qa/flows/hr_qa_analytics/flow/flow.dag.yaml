@@ -1,0 +1,87 @@
+id: bring_your_own_data_qna
+name: Bring Your Own Data QnA
+environment:
+  python_requirements_txt: requirements.txt
+inputs:
+  question:
+    type: string
+    default: How many observations and variables were there in the IBM attrition
+      dataset?
+    is_chat_input: false
+outputs:
+  output:
+    type: string
+    reference: ${llm_response.output}
+  input_question:
+    type: string
+    reference: ${inputs.question}
+  retrieved_data:
+    type: string
+    reference: ${retrieve_data.output}
+nodes:
+- name: index_lookup_hr
+  type: python
+  source:
+    type: package
+    tool: promptflow_vectordb.tool.common_index_lookup.search
+  inputs:
+    mlindex_content: >
+      embeddings:
+        api_base: https://ai-visionhub907737153141.openai.azure.com/
+        api_type: azure
+        api_version: 2023-07-01-preview
+        batch_size: '1'
+        connection:
+          id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/Default_AzureOpenAI
+        connection_type: workspace_connection
+        deployment: text-embedding-ada-002
+        dimension: 1536
+        kind: open_ai
+        model: text-embedding-ada-002
+        schema_version: '2'
+      index:
+        api_version: 2023-07-01-preview
+        connection:
+          id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/vision-search-service-AzureAISearch-nvqkglm80z-shared
+        connection_type: workspace_connection
+        endpoint: https://vision-search-service.search.windows.net
+        engine: azure-sdk
+        field_mapping:
+          content: content
+          embedding: contentVector
+          metadata: meta_json_string
+        index: magenta-garage-wmhlljcdnz
+        kind: acs
+        semantic_configuration_name: azureml-default
+    queries: ${inputs.question}
+    query_type: Hybrid (vector + keyword)
+    top_k: 2
+  use_variants: false
+- name: retrieve_data
+  type: python
+  source:
+    type: code
+    path: retrieved_data.py
+  inputs:
+    docs: ${index_lookup_hr.output}
+    maxTokens: 3500
+  use_variants: false
+- name: llm_response
+  type: llm
+  source:
+    type: code
+    path: llm_analysis__variant_2.jinja2
+  inputs:
+    deployment_name: gpt-35-turbo-16k
+    temperature: 1
+    top_p: 1
+    max_tokens: 500
+    presence_penalty: 0
+    frequency_penalty: 0
+    documentation: ${retrieve_data.output}
+    user_query: ${inputs.question}
+  provider: AzureOpenAI
+  connection: Default_AzureOpenAI
+  api: chat
+  module: promptflow.tools.aoai
+  use_variants: false

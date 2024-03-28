@@ -72,7 +72,7 @@ def prepare_and_execute(
                                     api_key=avail_con['api_key'],
                                     api_base=avail_con['api_base'],
                                     api_type=avail_con['api_type'],
-                                    api_version=avail_con['api_version']
+                                    api_version="2023-07-01-Preview"
                                 )
                                 pf.connections.create_or_update(connection)
 

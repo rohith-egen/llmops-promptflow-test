@@ -1,0 +1,93 @@
+id: bring_your_own_data_qna
+name: Bring Your Own Data QnA
+inputs:
+  question_1:
+    type: string
+    default: How to use SDK V2?
+    is_chat_input: false
+  question_2:
+    type: string
+    is_chat_input: false
+outputs:
+  output:
+    type: string
+    reference: ${hr_analytics.output}
+nodes:
+- name: hr_analytics
+  type: python
+  source:
+    type: package
+    tool: promptflow_vectordb.tool.common_index_lookup.search
+  inputs:
+    mlindex_content: >
+      embeddings:
+        api_base: https://ai-visionhub907737153141.openai.azure.com/
+        api_type: azure
+        api_version: 2023-07-01-preview
+        batch_size: '1'
+        connection:
+          id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/Default_AzureOpenAI
+        connection_type: workspace_connection
+        deployment: text-embedding-ada-002
+        dimension: 1536
+        kind: open_ai
+        model: text-embedding-ada-002
+        schema_version: '2'
+      index:
+        api_version: 2023-07-01-preview
+        connection:
+          id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/vision-search-service-AzureAISearch-3mxm4mqtzh-shared
+        connection_type: workspace_connection
+        endpoint: https://vision-search-service.search.windows.net
+        engine: azure-sdk
+        field_mapping:
+          content: content
+          embedding: contentVector
+          metadata: meta_json_string
+        index: hr-index-latest
+        kind: acs
+        semantic_configuration_name: azureml-default
+    queries: ${inputs.question_2}
+    query_type: Hybrid (vector + keyword)
+    top_k: 2
+  use_variants: false
+- name: llm_analysis
+  type: llm
+  source:
+    type: code
+    path: llm_analysis.jinja2
+  inputs:
+    deployment_name: gpt-35-turbo-16k
+    temperature: 1
+    top_p: 1
+    presence_penalty: 0
+    frequency_penalty: 0
+    lookup_output: "4. Exploration and Analysis: Comparing Current and Former
+      Workers: Now that we have all of the baseline data let us dive deeper into
+      each appropriate category to grasp what may be the drivers for such a high
+      attrition rate at IBM. 4.1 Age Attrited Employed Age Min 18 18 Age Mean 34
+      37 Age Max 58 60 Age Percentage <34 59% 39% Age Percentage <37 70% 54%
+      Portions of this data is from the Reference Section.0 5 10 15 24 25 26 27
+      28 29 30 31 32 33 34 35 Age Total Per Age Unpacking IBM HR Analytics
+      Employee Attrition & Performance. Top 10 Attrition by Age Portions of this
+      data is from the Reference Section. Ages 25 & 27 are not ranked in the top
+      10 As we can see, 59% of all former workers are below the age of 34, but
+      70% of all former workers are below the company’s average age of 37. Of
+      our current employees, 54% of the company is below the average age of 37,
+      and 39% are below the age of 34"
+  provider: AzureOpenAI
+  connection: Default_AzureOpenAI
+  api: chat
+  module: promptflow.tools.aoai
+  use_variants: false
+- name: clean_output
+  type: python
+  source:
+    type: code
+    path: clean_output.py
+  inputs:
+    llm_output: ${llm_analysis.output}
+  use_variants: false
+node_variants: {}
+environment:
+  python_requirements_txt: requirements.txt

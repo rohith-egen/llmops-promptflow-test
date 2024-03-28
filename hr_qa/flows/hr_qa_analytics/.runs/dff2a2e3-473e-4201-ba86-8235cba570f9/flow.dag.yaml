@@ -1,0 +1,53 @@
+inputs:
+  question_1:
+    type: string
+    default: How to use SDK V2?
+    is_chat_input: false
+outputs:
+  output:
+    type: string
+    reference: ${llm_analysis.output}
+    evaluation_only: false
+    is_chat_output: false
+nodes:
+- name: hr_analytics
+  type: python
+  source:
+    type: package
+    tool: promptflow_vectordb.tool.common_index_lookup.search
+  inputs:
+    mlindex_content: "embeddings:\n  api_base: https://ai-visionhub907737153141.openai.azure.com/\n  api_type: azure\n  api_version: 2023-07-01-preview\n  batch_size: '1'\n  connection:\n    id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/Default_AzureOpenAI\n  connection_type: workspace_connection\n  deployment: text-embedding-ada-002\n  dimension: 1536\n  kind: open_ai\n  model: text-embedding-ada-002\n  schema_version: '2'\nindex:\n  api_version: 2023-07-01-preview\n  connection:\n    id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/vision-search-service-AzureAISearch-nvqkglm80z-shared\n  connection_type: workspace_connection\n  endpoint: https://vision-search-service.search.windows.net\n  engine: azure-sdk\n  field_mapping:\n    content: content\n    embedding: contentVector\n    metadata: meta_json_string\n  index: magenta-garage-wmhlljcdnz\n  kind: acs\n  semantic_configuration_name: azureml-default\n"
+    queries: "${inputs.question_1}"
+    query_type: "Hybrid (vector + keyword)"
+    top_k: 2
+  aggregation: false
+- name: retrieved_data
+  type: python
+  source:
+    type: code
+    path: retrieved_data.py
+  inputs:
+    docs: "${hr_analytics.output}"
+    maxTokens: 3500
+  aggregation: false
+- name: llm_analysis
+  type: llm
+  source:
+    type: code
+    path: llm_analysis__variant_2.jinja2
+  inputs:
+    deployment_name: "gpt-35-turbo-16k"
+    temperature: 1
+    top_p: 1
+    max_tokens: 500
+    presence_penalty: 0
+    frequency_penalty: 0
+    documentation: "${retrieved_data.output}"
+    user_query: "${inputs.question_1}"
+  api: chat
+  provider: AzureOpenAI
+  connection: Default_AzureOpenAI
+  module: promptflow.tools.aoai
+  aggregation: false
+environment:
+  python_requirements_txt: requirements.txt

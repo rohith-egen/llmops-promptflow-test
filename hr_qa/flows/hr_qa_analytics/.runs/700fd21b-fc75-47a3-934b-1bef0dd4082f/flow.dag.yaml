@@ -1,0 +1,33 @@
+inputs:
+  question:
+    type: string
+    default: How to use SDK V2?
+    is_chat_input: false
+outputs:
+  output:
+    type: string
+    reference: ${answer_the_question_with_context.output}
+    evaluation_only: false
+    is_chat_output: false
+nodes:
+- name: hr_analytics
+  type: python
+  source:
+    type: package
+    tool: promptflow_vectordb.tool.common_index_lookup.search
+  inputs:
+    mlindex_content: "embeddings:\n  api_base: https://ai-visionhub907737153141.openai.azure.com/\n  api_type: azure\n  api_version: 2023-07-01-preview\n  batch_size: '1'\n  connection:\n    id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/Default_AzureOpenAI\n  connection_type: workspace_connection\n  deployment: text-embedding-ada-002\n  dimension: 1536\n  kind: open_ai\n  model: text-embedding-ada-002\n  schema_version: '2'\nindex:\n  api_version: 2023-07-01-preview\n  connection:\n    id: /subscriptions/29e2d28c-5c5f-4e9b-a020-52ea10496727/resourceGroups/vision-resource-grp/providers/Microsoft.MachineLearningServices/workspaces/vision-project/connections/vision-search-service-AzureAISearch-3mxm4mqtzh-shared\n  connection_type: workspace_connection\n  endpoint: https://vision-search-service.search.windows.net\n  engine: azure-sdk\n  field_mapping:\n    content: content\n    embedding: contentVector\n    metadata: meta_json_string\n  index: hr-index-latest\n  kind: acs\n  semantic_configuration_name: azureml-default\n"
+    queries: "${inputs.question}"
+    query_type: "Hybrid (vector + keyword)"
+    top_k: 2
+  aggregation: false
+- name: Prompt_variants
+  type: prompt
+  source:
+    type: code
+    path: Prompt_variants.jinja2
+  inputs:
+    question: "${inputs.question}"
+  aggregation: false
+environment:
+  python_requirements_txt: requirements.txt
