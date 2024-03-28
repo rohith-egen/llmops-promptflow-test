@@ -118,7 +118,8 @@ for elem in data_config["datasets"]:
             try:
                 data_info = ml_client.data.get(
                     name=dataset_name,
-                    label='latest'
+                    version="2023-03-01-preview"
+                    # label='latest'
                 )
 
                 m_hash = dict(data_info.tags).get("data_hash")
