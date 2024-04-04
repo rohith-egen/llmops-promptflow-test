@@ -1,4 +1,4 @@
-import bs4
+# import bs4
 import requests
 
 from promptflow import tool
@@ -15,9 +15,10 @@ def fetch_text_content_from_url(url: str):
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
             # Parse the HTML content using BeautifulSoup
-            soup = bs4.BeautifulSoup(response.text, "html.parser")
-            soup.prettify()
-            return soup.get_text()[:2000]
+            # soup = bs4.BeautifulSoup(response.text, "html.parser")
+            # soup.prettify()
+            # return soup.get_text()[:2000]
+            return "some beutified random text"
         else:
             msg = (
                 f"Get url failed with status code {response.status_code}.\nURL: {url}\nResponse: "
