@@ -5,7 +5,7 @@
                 "RUNTIME_NAME": "",
                 "KEYVAULT_NAME": "",
                 "RESOURCE_GROUP_NAME": "",
-                "WORKSPACE_NAME": "",
+                "WORKSPACE_NAME": "vision-project",
                 "STANDARD_FLOW_PATH": "flows/hr_qa_analytics",
                 "EVALUATION_FLOW_PATH": "flows/hr_evaluation"
             }
