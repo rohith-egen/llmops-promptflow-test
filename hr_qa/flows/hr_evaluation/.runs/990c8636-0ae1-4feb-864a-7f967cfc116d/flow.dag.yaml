@@ -1,0 +1,57 @@
+id: classification_accuracy_eval
+name: Classification Accuracy Evaluation
+inputs:
+  groundtruth:
+    type: string
+    default: App
+    description: Please specify the groundtruth column, which contains the true
+      label to the outputs that your flow produces.
+    is_chat_input: false
+  prediction:
+    type: string
+    default: App
+    description: Please specify the prediction column, which contains the predicted
+      outputs that your flow produces.
+    is_chat_input: false
+outputs:
+  naive_metric:
+    type: string
+    reference: ${naive_approach.output}
+  SequenceMacher_metric:
+    type: string
+    reference: ${SequenceMatcher_approach.output}
+  difflib_metric:
+    type: string
+    reference: ${difflib_approach.output}
+nodes:
+- name: naive_approach
+  type: python
+  source:
+    type: code
+    path: naive_approach.py
+  inputs:
+    groundtruth: ${inputs.groundtruth}
+    prediction: ${inputs.prediction}
+  aggregation: false
+  use_variants: false
+- name: SequenceMatcher_approach
+  type: python
+  source:
+    type: code
+    path: SequenceMatcher_approach.py
+  inputs:
+    groundtruth: ${inputs.groundtruth}
+    prediction: ${inputs.prediction}
+  use_variants: false
+- name: difflib_approach
+  type: python
+  source:
+    type: code
+    path: difflin_approach.py
+  inputs:
+    groundtruth: ${inputs.groundtruth}
+    prediction: ${inputs.prediction}
+  use_variants: false
+node_variants: {}
+environment:
+  python_requirements_txt: requirements.txt
