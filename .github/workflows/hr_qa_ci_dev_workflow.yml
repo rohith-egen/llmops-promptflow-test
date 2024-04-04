@@ -19,8 +19,7 @@ on:
         required: true
   push:
     branches:
-      - main
-      - development
+      - featurebranch
     paths:
       - '.github/**'
       - 'llmops/**'
