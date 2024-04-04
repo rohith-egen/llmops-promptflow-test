@@ -4,7 +4,7 @@
                 "ENV_NAME": "dev",
                 "RUNTIME_NAME": "",
                 "KEYVAULT_NAME": "",
-                "RESOURCE_GROUP_NAME": "",
+                "RESOURCE_GROUP_NAME": "vision-resource-grp",
                 "WORKSPACE_NAME": "vision-project",
                 "STANDARD_FLOW_PATH": "flows/hr_qa_analytics",
                 "EVALUATION_FLOW_PATH": "flows/hr_evaluation"
