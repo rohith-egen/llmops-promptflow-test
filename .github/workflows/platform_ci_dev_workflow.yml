@@ -12,7 +12,7 @@ on:
         type: string
         description: "The flow use-case to execute"
         required: true
-        default: "web_classification"
+        default: "hr_qa"
       deployment_type:
         type: string
         description: "Determine type of deployment - aml, aks, docker, webapp"

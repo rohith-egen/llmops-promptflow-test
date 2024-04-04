@@ -113,8 +113,7 @@ class LocalFlowExecution:
                     api_key=local_connection["api_key"],
                     api_base=local_connection["api_base"],
                     api_type=local_connection["api_type"],
-                    # api_version=local_connection["api_version"],
-                    api_version="2023-07-01-Preview"
+                    api_version=local_connection["api_version"],
                 )
                 conn = self.local_pf_client.connections.create_or_update(connection)
                 print(f"successfully created connection..{conn}")
