@@ -4,7 +4,7 @@
           "PROMPT_FLOW_CONFIG_NAME": "hr_qa",
           "ENV_NAME": "dev",
           "DATA_PURPOSE": "test_data",
-          "DATA_PATH":"data/HR_QA_test_dataset.csv",
+          "DATA_PATH":"data/HR_QA_test_dataset.jsonl",
           "DATASET_NAME":"hr_qa_data",
           "RELATED_EXP_DATASET": "hr_qa_train",
           "DATASET_DESC":"this dataset is for evaluating flows"

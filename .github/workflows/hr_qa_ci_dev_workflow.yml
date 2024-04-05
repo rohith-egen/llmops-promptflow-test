@@ -19,7 +19,7 @@ on:
         required: true
   push:
     branches:
-      - featurebranch
+      - featurebranch-vik
     paths:
       - '.github/**'
       - 'llmops/**'

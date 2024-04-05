@@ -1,10 +1,10 @@
 {
     "experiment": {
-        "question": "${data.question}"
+        "question": "${data.Questions}"
     },
     "evaluation": {
         "evaluation": {
-            "groundtruth": "${data.answer}",
+            "groundtruth": "${data.Answer}",
             "prediction": "${run.outputs.output}"
         }
     }
