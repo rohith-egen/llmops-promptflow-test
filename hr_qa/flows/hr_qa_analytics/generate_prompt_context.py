@@ -3,6 +3,7 @@ from promptflow import tool
 from promptflow_vectordb.core.contracts import SearchResultEntity
 
 
+#used to generate_prompt context
 @tool
 def generate_prompt_context(search_result: List[dict]) -> str:
     def format_doc(doc: dict):
