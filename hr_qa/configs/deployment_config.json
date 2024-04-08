@@ -3,7 +3,7 @@
         {
             "ENV_NAME": "dev",
             "TEST_FILE_PATH": "sample-request.json",
-            "ENDPOINT_NAME": "LLMOPS-HR-QA-endpoint",
+            "ENDPOINT_NAME": "LLMOPS_HR_QA_endpoint",
             "ENDPOINT_DESC": "An online endpoint serving a flow for HR QA flow",
             "DEPLOYMENT_DESC": "prompt flow deployment",
             "PRIOR_DEPLOYMENT_NAME": "",      
@@ -11,25 +11,6 @@
             "CURRENT_DEPLOYMENT_NAME": "LLMOPS-HR-QA-deployment",
             "CURRENT_DEPLOYMENT_TRAFFIC_ALLOCATION": "100",
             "DEPLOYMENT_VM_SIZE": "Standard_D2as_v4",
-            "DEPLOYMENT_INSTANCE_COUNT": 1,
-            "ENVIRONMENT_VARIABLES": {
-                "example-name": "example-value"
-            }
-        }
-    ],
-
-    "kubernetes_endpoint":[
-        {
-            "ENV_NAME": "dev",
-            "TEST_FILE_PATH": "sample-request.json",
-            "ENDPOINT_NAME": "LLMOPS-HR-QA-endpoint-kube",
-            "ENDPOINT_DESC": "An online endpoint serving a flow for HR QA flow",
-            "DEPLOYMENT_DESC": "prompt flow deployment",
-            "PRIOR_DEPLOYMENT_NAME": "",      
-            "PRIOR_DEPLOYMENT_TRAFFIC_ALLOCATION": "0",
-            "CURRENT_DEPLOYMENT_NAME": "LLMOPS-HR-QA-deployment",
-            "CURRENT_DEPLOYMENT_TRAFFIC_ALLOCATION": "100",
-            "DEPLOYMENT_VM_SIZE": "promptinstancetype",
             "DEPLOYMENT_INSTANCE_COUNT": 1,
             "ENVIRONMENT_VARIABLES": {
                 "example-name": "example-value"
