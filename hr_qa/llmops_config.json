@@ -3,7 +3,7 @@
             {
                 "ENV_NAME": "dev",
                 "RUNTIME_NAME": "",
-                "KEYVAULT_NAME": "",
+                "KEYVAULT_NAME": "kv-visionhu907737153141",
                 "RESOURCE_GROUP_NAME": "vision-resource-grp",
                 "WORKSPACE_NAME": "vision-project",
                 "STANDARD_FLOW_PATH": "flows/hr_qa_analytics",
