@@ -39,4 +39,4 @@ jobs:
     secrets:
       azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
       connection_details: ${{ secrets.COMMON_DEV_CONNECTIONS }}
-      registry_details: ${{ secrets.DOCKER_IMAGE_REGISTRY }}
+      # registry_details: ${{ secrets.DOCKER_IMAGE_REGISTRY }}
